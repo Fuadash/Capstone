@@ -1,19 +1,12 @@
 import sys
-from sqlalchemy import create_engine, text
-from typing import Dict
-from src.utils.connection_utils import get_connection_url
+from sqlalchemy import Engine
+from sqlalchemy import text
 
 
-def extract(config: Dict[str, Dict[str, str]]):
+def extract(engine: Engine):
     """Extracts data from the database"""
-    # Choose source db
-    source_db = config["source_database"]
-    url = get_connection_url(source_db)
 
-    # 3. Create SQLAlchemy engine
-    engine = create_engine(url)
-
-    # 4. Test the connection
+    # Test the connection
     with engine.connect() as conn:
         result = conn.execute(text("SELECT version();"))
         print("PostgreSQL version:", result.scalar())
