@@ -1,14 +1,7 @@
 import sys
 from sqlalchemy import create_engine, text
 from typing import Dict
-
-
-def get_connection_url(db_settings: dict) -> str:
-    """Builds a PostgreSQL connection URL for SQLAlchemy."""
-    return (
-        f"postgresql+psycopg2://{db_settings['user']}:{db_settings['password']}"
-        f"@{db_settings['host']}:{db_settings['port']}/{db_settings['dbname']}"
-    )
+from src.utils.connection_utils import get_connection_url
 
 
 def extract(config: Dict[str, Dict[str, str]]):
