@@ -84,6 +84,7 @@ So that all fields are consistent, valid, and analysis-ready.
 ```
 
 ## USER STORY 2.1 ACCEPTANCE CRITERIA
+* Explore the data, checking for any possible issues
 * Missing values handled according to specifications
 * Date formats standardized to target format (YYYY-MM-DD).
 * Currency values standardized to a single unit (USD).
