@@ -8,6 +8,8 @@ I want to be able to access an application that provides clear, accurate, and up
 So that I can make informed business decisions and identify trends in the gaming market.
 ```
 
+---
+
 # Epic 1: Extract
 
 ```
@@ -104,7 +106,6 @@ So that I can perform deeper analysis and identify trends.
 * Unit tests verify enrichment logic.
 * Derived metrics are tolerable to changes in the dataset.
 
-
 ---
 
 # Epic 3 BREAKDOWN: Load
@@ -129,6 +130,7 @@ So that I can perform deeper analysis and identify trends.
 * Row count matches output from transformation step.
 * Unit tests verify successful table creation and data load.
 
+---
 
 # Epic 4: Visualization
 ```
