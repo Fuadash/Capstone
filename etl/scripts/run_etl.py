@@ -23,6 +23,8 @@ def main():
 
     # Pass the engine to the extract function which pulls data from database
     data = extract(engine)
+
+    print(data)
     print(
         f"ETL pipeline run successfully in "
         f"{os.getenv('ENV', 'error')} environment!"
