@@ -39,8 +39,6 @@ def main():
     # Print number of nulls to compare after cleaning
     print(f'Transformed DataFrame contains {transformed_data.isna().sum().sum()} null values')
 
-    # Get a list of column headers
-    column_list = list(transformed_data.columns.values)
     # Pass everything into the load function
     load(
         df=transformed_data,
