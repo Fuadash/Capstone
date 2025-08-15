@@ -3,6 +3,7 @@ import sys
 from config.env_config import setup_env
 from src.extract.extract import extract
 from src.transform.transform import transform
+from src.load.load import load
 from config.db_config import load_db_config
 from src.utils.connection_utils import get_connection_url
 from sqlalchemy import create_engine
@@ -37,7 +38,15 @@ def main():
 
     # Print number of nulls to compare after cleaning
     print(f'Transformed DataFrame contains {transformed_data.isna().sum().sum()} null values')
-    
+
+    # Pass everything into the load function
+    load(
+        df=transformed_data,
+        engine=engine,
+        schema="de_2506_a",
+        table_name="fa_steam_final"
+    )
+
     print(
         f"ETL pipeline run successfully in "
         f"{os.getenv('ENV', 'error')} environment!"

@@ -120,9 +120,8 @@ So that it can be accessed by the visualization application and shared with stak
 
 ```
 As a Data Analyst/Scientist,
-I want access to a dataset with derived metrics (e.g., price-to-review ratio, recent player growth),
-I additionally want a dataset with metrics pulled in from other contexts and joined with the preexisting data
-So that I can perform deeper analysis and identify trends.
+I want access to a database in SQL so I can perform complex queries on it
+So that I can perform deeper analysis
 ```
 
 ## USER STORY 3.1 ACCEPTANCE CRITERIA
