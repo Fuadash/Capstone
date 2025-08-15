@@ -1,27 +1,28 @@
-import sys
+import pandas as pd
+import os
 from sqlalchemy import Engine
 from sqlalchemy import text
 
 
-def extract(engine: Engine):
-    """Extracts data from the database"""
+# TODO: Make it so that extract is passed a SQL query instead of making it
+def extract(
+    engine: Engine, output_csv: str = "data/raw/output.csv"
+) -> pd.DataFrame:
+    """
+    Extracts data from the database, saves to CSV, and returns a DataFrame
+    Takes a database engine and an output csv path
+    """
 
-    #query = text('SELECT * FROM "main"."actor"')
-    query = text('SELECT * FROM "de-2506-a"."fa_steam"')
+    query = text('SELECT * FROM "de_2506_a"."fa_steam"')
 
-    # Test the connection
     with engine.connect() as conn:
-        result = conn.execute(query)
+        # Load query results directly into a DataFrame
+        df = pd.read_sql(query, conn)
 
-        # Fetch all rows
-        rows = result.fetchall()
+    # Make sure directory exists
+    os.makedirs(os.path.dirname(output_csv), exist_ok=True)
 
-        # Optionally print them
-        for row in rows:
-            print(row)
+    # Save to CSV
+    df.to_csv(output_csv, index=False)
 
-    return rows
-
-
-if __name__ == "__main__":
-    extract(sys.argv)
+    return df

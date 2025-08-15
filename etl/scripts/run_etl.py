@@ -24,7 +24,11 @@ def main():
     # Pass the engine to the extract function which pulls data from database
     data = extract(engine)
 
+    # print for testing purposes
     print(data)
+
+    print(f'Dataframe contains {data.isna().sum().sum()} null values')
+
     print(
         f"ETL pipeline run successfully in "
         f"{os.getenv('ENV', 'error')} environment!"
