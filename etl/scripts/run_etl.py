@@ -2,6 +2,7 @@ import os
 import sys
 from config.env_config import setup_env
 from src.extract.extract import extract
+from src.transform.transform import transform
 from config.db_config import load_db_config
 from src.utils.connection_utils import get_connection_url
 from sqlalchemy import create_engine
@@ -22,12 +23,20 @@ def main():
     engine = create_engine(url)
 
     # Pass the engine to the extract function which pulls data from database
+    print("Passing engine to extract function...")
     data = extract(engine)
 
-    # print for testing purposes
+    # Print data for testing purposes
+    # Also print number of nulls to compare later
+    # TODO: Actually use logging framework
     print(data)
+    print(f'DataFrame contains {data.isna().sum().sum()} null values')
 
-    print(f'Dataframe contains {data.isna().sum().sum()} null values')
+    # Pass data to transform function
+    transformed_data = transform(data)
+
+    # Print number of nulls to compare after cleaning
+    print(f'Transformed DataFrame contains {transformed_data.isna().sum().sum()} null values')
 
     print(
         f"ETL pipeline run successfully in "
