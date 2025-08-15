@@ -37,7 +37,7 @@ def main():
 
     # Print number of nulls to compare after cleaning
     print(f'Transformed DataFrame contains {transformed_data.isna().sum().sum()} null values')
-
+    
     print(
         f"ETL pipeline run successfully in "
         f"{os.getenv('ENV', 'error')} environment!"
