@@ -23,9 +23,10 @@ def main():
     # Create SQLAlchemy engine from the url
     engine = create_engine(url)
 
-    # Pass the engine to the extract function which pulls data from database
-    print("Passing engine to extract function...")
-    data = extract(engine)
+    # Pass the engine (or dont) to the extract function which pulls data from database
+    print("Running extract function...")
+    data = extract(input_csv="data/raw/input.csv",
+                   output_csv="data/raw/output.csv")
 
     # Print data for testing purposes
     # Also print number of nulls to compare later
