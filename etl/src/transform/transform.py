@@ -53,12 +53,9 @@ def transform(
     cleaned_df["Negative"] = cleaned_df["Negative"].astype("Int64")
     cleaned_df["Recommendations"] = cleaned_df["Recommendations"].astype("Int64")
 
-    # 1.1 Drop Duplicates
+    # 2 Drop Duplicates
 
     df_no_dupes = cleaned_df.drop_duplicates()
-
-    # 2. Clean names
-
     # 3. Standardize dates/currencies/etc.
 
     df_no_dupes["Release date"] = pd.to_datetime(
@@ -67,6 +64,11 @@ def transform(
     df_no_dupes["Release date"] = df_no_dupes["Release date"].dt.strftime("%Y-%m-%d")
 
     # 4. Convert required age to boolean
+    df_no_dupes["Age restricted"] = df_no_dupes["Required age"].apply(lambda x: x >= 12)
+    df_no_dupes = df_no_dupes.drop(columns=["Required age"])
+
+
+    # 5. Remove outlier game prices
 
     # Write data
 
