@@ -1,5 +1,5 @@
 import pandas as pd
-from sqlalchemy import Engine
+from sqlalchemy import Engine, text
 
 
 # This creates the table and appends the data
@@ -14,10 +14,8 @@ def load(
     # Reduce the df size to not cause issues
     df_small = df.head(size).copy()
 
-    print("length of dataframe: " + len(df))
-    print("length of truncated dataframe: " + len(df_small))
-
-    df_small.reset_index(inplace=True)
+    print(f"length of dataframe: {len(df)}")
+    print(f"length of truncated dataframe: {len(df_small)}")
 
     # Now append the data
     df_small.to_sql(
