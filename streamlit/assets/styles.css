@@ -1,0 +1,5 @@
+/* Wider sidebar */
+[data-testid="stSidebar"] { min-width: 350px; max-width: 350px; }
+
+/* Make tables fill page */
+.stDataFrame, .stTable { width: 100% !important; }
