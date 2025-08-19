@@ -14,8 +14,8 @@ def load(
     # Reduce the df size to not cause issues
     df_small = df.head(size).copy()
 
-    print(len(df))
-    print(len(df_small))
+    print("length of dataframe: " + len(df))
+    print("length of truncated dataframe: " + len(df_small))
 
     df_small.reset_index(inplace=True)
 

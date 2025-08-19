@@ -44,6 +44,10 @@ def transform(
         ],
     )
 
+    # 1.1 Drop Duplicates
+
+    cleaned_df.drop_duplicates(inplace=True)
+
     # 2. Clean names
 
     # 3. Standardize dates/currencies/etc.
