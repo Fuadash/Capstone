@@ -102,7 +102,7 @@ st.plotly_chart(fig3, use_container_width=True)
 fig4 = px.histogram(
     filtered_df,
     x="Price",
-    nbins=50,
+    nbins=10,
     title="Distribution of Game Prices",
 )
 st.plotly_chart(fig4, use_container_width=True)
