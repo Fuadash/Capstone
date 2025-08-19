@@ -24,7 +24,7 @@ def transform(
         inplace=True,
     )
 
-    # 1. Clean nulls
+    # 0.5. Clean nulls
     cleaned_df = clean_nulls(
         df=df,
         columns=[
@@ -44,9 +44,18 @@ def transform(
         ],
     )
 
+    # 1. Fix types from float back to int
+    cleaned_df["AppID"] = cleaned_df["AppID"].astype("Int64")
+    cleaned_df["Peak CCU"] = cleaned_df["Peak CCU"].astype("Int64")
+    cleaned_df["Required age"] = cleaned_df["Required age"].astype("Int64")
+    cleaned_df["Metacritic score"] = cleaned_df["Metacritic score"].astype("Int64")
+    cleaned_df["Positive"] = cleaned_df["Positive"].astype("Int64")
+    cleaned_df["Negative"] = cleaned_df["Negative"].astype("Int64")
+    cleaned_df["Recommendations"] = cleaned_df["Recommendations"].astype("Int64")
+
     # 1.1 Drop Duplicates
 
-    cleaned_df.drop_duplicates(inplace=True)
+    df_no_dupes = cleaned_df.drop_duplicates()
 
     # 2. Clean names
 
@@ -60,12 +69,12 @@ def transform(
     os.makedirs(os.path.dirname(output_csv), exist_ok=True)
 
     # Save to CSV
-    cleaned_df.to_csv(output_csv, index=False)
+    df_no_dupes.to_csv(output_csv, index=False)
 
     # 5.return data
-    return cleaned_df
+    return df_no_dupes
 
 
 def clean_nulls(df: pd.DataFrame, columns: [str]) -> pd.DataFrame:
-    cleaned_df = df.dropna(subset=columns)
+    cleaned_df = df.dropna(subset=columns).copy()
     return cleaned_df
