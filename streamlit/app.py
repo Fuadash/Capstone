@@ -5,8 +5,8 @@ import requests
 
 
 def get_live_game_info(appid: int):
-    url = f"https://store.steampowered.com/api/appdetails?appids={appid}&cc=gb&lang=en"
-    #url = f"https://store.steampowered.com/api/appdetails?appids=367520&cc=gb&lang=en"
+    #url = f"https://store.steampowered.com/api/appdetails?appids={appid}&cc=gb&lang=en"
+    url = f"https://store.steampowered.com/api/appdetails?appids={appid}&lang=en"
     resp = requests.get(url)
     data = resp.json()
     if data[str(appid)]["success"]:
@@ -100,15 +100,31 @@ if game_name:
     appid = int(game_row["AppID"])  
 
     st.write(f"Fetching live data for **{game_name}**...")
-    ### UNCOMMENT BELOW FOR CAPSTONE
-    # live_data = get_live_game_info(appid)
+    ## UNCOMMENT BELOW FOR CAPSTONE
+    live_data = get_live_game_info(appid)
 
-    # if live_data and "price_overview" in live_data:
-    #     price_info = live_data["price_overview"]
-    #     st.metric("Current Price", f"${price_info['final'] / 100:.2f}")
-    #     st.metric("Discount", f"{price_info['discount_percent']}%")
-    # else:
-    #     st.warning("No live pricing info available for this game.")
+    if live_data:
+        # Price info
+        if "price_overview" in live_data:
+            price_info = live_data["price_overview"]
+            st.metric("Current Price", f"${price_info['final'] / 100:.2f}")
+            st.metric("Discount", f"{price_info['discount_percent']}%")
+
+        # Short description
+        if "short_description" in live_data:
+            st.subheader("Description")
+            st.write(live_data["short_description"])
+
+        # Developers
+        if "developers" in live_data:
+            st.subheader("Developers")
+            st.write(", ".join(live_data["developers"]))
+
+        if "metacritic" in live_data:
+            st.subheader("Metacritic")
+            st.write(f"Metacritic Score: {live_data['metacritic']['score']}")
+    else:
+        st.warning("No live pricing info available for this game.")
 
 
 # VISUALIZATIONS ------------------------------
