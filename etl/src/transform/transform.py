@@ -69,6 +69,7 @@ def transform(
 
 
     # 5. Remove outlier game prices
+    df_no_dupes = df_no_dupes.loc[df['Price'] <= 100]
 
     # Write data
 
