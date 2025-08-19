@@ -19,7 +19,7 @@ def transform(
             "Screenshots",
             "Movies",
             "Score rank",
-            "User score"
+            "User score",
         ],
         inplace=True,
     )
@@ -60,6 +60,11 @@ def transform(
     # 2. Clean names
 
     # 3. Standardize dates/currencies/etc.
+
+    df_no_dupes["Release date"] = pd.to_datetime(
+        df_no_dupes["Release date"], errors="coerce"
+    )
+    df_no_dupes["Release date"] = df_no_dupes["Release date"].dt.strftime("%Y-%m-%d")
 
     # 4. Convert required age to boolean
 
