@@ -1,5 +1,5 @@
 import pandas as pd
-from sqlalchemy import Engine, text
+from sqlalchemy import Engine
 
 
 # This creates the table and appends the data
