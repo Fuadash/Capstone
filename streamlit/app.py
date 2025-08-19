@@ -1,6 +1,17 @@
 import pandas as pd
 import streamlit as st
 import plotly.express as px
+import requests
+
+
+def get_live_game_info(appid: int):
+    url = f"https://store.steampowered.com/api/appdetails?appids={appid}&cc=gb&lang=en"
+    #url = f"https://store.steampowered.com/api/appdetails?appids=367520&cc=gb&lang=en"
+    resp = requests.get(url)
+    data = resp.json()
+    if data[str(appid)]["success"]:
+        return data[str(appid)]["data"]
+    return None
 
 
 def get_data() -> pd.DataFrame:
@@ -15,7 +26,7 @@ df = get_data()
 # FILTERS ----------------------
 
 # Sidebar Filters
-st.sidebar.header("Steam Games")
+st.sidebar.header("Steam Games (April 2025)")
 
 # Year filter
 min_year = int(df["Release date"].dt.year.min())
@@ -26,10 +37,17 @@ year_range = st.sidebar.slider("Release Year", min_year, max_year, (min_year, ma
 min_price = float(df["Price"].min())
 max_price = float(df["Price"].max())
 price_range = st.sidebar.slider(
-    "Price Range", min_price, max_price, (min_price, max_price)
+    "Price Range",
+    min_price,
+    max_price,
+    (min_price, max_price),
+    step=0.5,
+    format="$%.2f",
 )
 
-# Tag filter 
+
+
+# Tag filter
 tag_options = df["Tags"].dropna().str.split(",").explode().str.strip().unique()
 tag_filter = st.sidebar.multiselect("Tags", tag_options)
 
@@ -67,8 +85,30 @@ if platform_filter != "All":
 # Add the platforms in a field
 st.subheader("Steam Store Games")
 st.dataframe(
-    filtered_df[["Name", "Release Year", "Price", "Developers", "Tags"]].head(200)
+    filtered_df[["Name", "Release Year", "Price", "Developers", "Tags"]].head(500)
 )
+
+# After filtering we can display filtered data
+game_name = st.sidebar.selectbox(
+    "Select a Game",
+    filtered_df["Name"].unique()
+)
+
+if game_name:
+    game_row = filtered_df[filtered_df["Name"] == game_name].iloc[0]
+
+    appid = int(game_row["AppID"])  
+
+    st.write(f"Fetching live data for **{game_name}**...")
+    ### UNCOMMENT BELOW FOR CAPSTONE
+    # live_data = get_live_game_info(appid)
+
+    # if live_data and "price_overview" in live_data:
+    #     price_info = live_data["price_overview"]
+    #     st.metric("Current Price", f"${price_info['final'] / 100:.2f}")
+    #     st.metric("Discount", f"{price_info['discount_percent']}%")
+    # else:
+    #     st.warning("No live pricing info available for this game.")
 
 
 # VISUALIZATIONS ------------------------------
@@ -111,3 +151,17 @@ st.plotly_chart(fig4, use_container_width=True)
 # Maybe review power (pos/neg reviews) across the years?
 # top devs by number of games
 # fit in the overwhelmingly positive etc. buckets
+
+# STYLES ------
+# Make sidebar wider
+st.markdown(
+    """
+    <style>
+    /* Sidebar width */
+    [data-testid="stSidebar"] {
+        min-width: 350px;
+        max-width: 350px;
+    }
+    """,
+    unsafe_allow_html=True
+)
