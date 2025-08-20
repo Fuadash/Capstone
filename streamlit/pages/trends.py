@@ -6,12 +6,13 @@ from src.ui.charts import releases_per_year, avg_price_per_year, price_distribut
 
 st.title("Trends")
 
+for key, val in st.session_state.items():
+    st.session_state[key] = val
+
 df = load_data("../etl/data/processed/processed_data.csv")
 filters = render_sidebar_filters(df)
 filtered = apply_filters(df, filters)
 
-for key, val in st.session_state.items():
-    st.session_state[key] = val
 
 tab1, tab2, tab3 = st.tabs(["Releases", "Avg Price", "Price Dist."])
 with tab1:
