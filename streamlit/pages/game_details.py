@@ -36,6 +36,7 @@ if data:
     st.write(
         f"Live data for **{st.session_state['selected_game_name']}**"
     )
+    st.image(data.get("header_image"))
 else:
     st.write(
         f"Fetching live data for **{st.session_state['selected_game_name']}**..."
