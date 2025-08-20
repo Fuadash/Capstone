@@ -25,7 +25,9 @@ def render_sidebar_filters(df: pd.DataFrame) -> Filters:
 
     platform = st.sidebar.radio("Platform", ["All", "Windows", "Mac", "Linux"])
 
-    return Filters(year_range, price_range, tags, platform)
+    nsfw = st.sidebar.radio("Display Age Restricted Content?", ["Yes", "No"])
+
+    return Filters(year_range, price_range, tags, platform, nsfw)
 
 @st.cache_data
 def get_filter_bounds(df: pd.DataFrame):

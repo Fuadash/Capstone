@@ -8,3 +8,4 @@ class Filters:
     price_range: Tuple[float, float]
     tags: List[str]
     platform: str  # "All" | "Windows" | "Mac" | "Linux"
+    nsfw: str  # "Yes" | "No"
