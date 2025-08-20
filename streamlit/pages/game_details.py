@@ -2,6 +2,7 @@ import streamlit as st
 from src.services.data_loader import load_data
 from src.services.steam_client import get_live_game_info
 from src.ui.layout import load_css
+import pandas as pd
 
 st.title("Game Details")
 
@@ -31,14 +32,13 @@ with st.container():
     game_name = st.radio(
         label="Select a game",
         options=options,
-        key="details_selected_game",
-        index=default_index
+        key="selected_game_name",
     )
 
 # Use session_state to store selection
 if game_name:
     row = df.loc[df["Name"] == game_name].iloc[0]
-    st.session_state["selected_game_name"] = row["Name"]
+    #st.session_state["selected_game_name"] = row["Name"]
     st.session_state["selected_appid"] = int(row["AppID"])
 
 appid = st.session_state.get("selected_appid")
@@ -62,7 +62,10 @@ with tab_overview:
     st.subheader("Developers")
     st.write(", ".join(data.get("developers", [])) or "—")
 
-    st.subheader("Sensitive Content")
+    notes = row["Notes"] if "Notes" in row and pd.notna(row["Notes"]) else ""
+    if str(notes).strip():
+        st.subheader("Sensitive Content")
+        st.write(notes)
 
 with tab_pricing:
     is_free = data.get("is_free") or {}
