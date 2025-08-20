@@ -57,8 +57,8 @@ def transform(
     # 2 Drop Duplicates
 
     df_no_dupes = cleaned_df.drop_duplicates()
-    # 3. Standardize dates/currencies/etc.
 
+    # 3. Standardize dates/currencies/etc.
     df_no_dupes["Release date"] = pd.to_datetime(
         df_no_dupes["Release date"], errors="coerce"
     )
@@ -74,6 +74,8 @@ def transform(
 
     # 6. Enrichment
     enriched_df = enrich_reviews(df_no_dupes)
+
+    enriched_df = enrich_platforms(enriched_df)
 
     # Write data
 
@@ -150,3 +152,19 @@ def get_sentiment(row):
             return "Negative"
 
     return "Mixed"
+
+
+def enrich_platforms(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Combines Windows, Mac, Linux into "Available platforms"
+    Example: "Windows, Mac, Linux" or "Mac, Linux".
+    """
+
+    platforms = ["Windows", "Mac", "Linux"]
+
+    df["Available platforms"] = df.apply(
+        lambda row: ", ".join([p for p in platforms if row[p]]),
+        axis=1
+    )
+
+    return df
