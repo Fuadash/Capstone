@@ -44,6 +44,9 @@ def transform(
         ],
     )
 
+    # 0.75 Remove games without supported languages
+    cleaned_df = cleaned_df[cleaned_df["Supported languages"] != "[]"]
+
     # 1. Fix types from float back to int
     cleaned_df["AppID"] = cleaned_df["AppID"].astype("Int64")
     cleaned_df["Peak CCU"] = cleaned_df["Peak CCU"].astype("Int64")
@@ -66,7 +69,6 @@ def transform(
     # 4. Convert required age to boolean
     df_no_dupes["Age restricted"] = df_no_dupes["Required age"].apply(lambda x: x >= 12)
     df_no_dupes = df_no_dupes.drop(columns=["Required age"])
-
 
     # 5. Remove outlier game prices
     df_no_dupes = df_no_dupes.loc[df['Price'] <= 100]
