@@ -20,26 +20,25 @@ if search:
 
 options = filtered.unique()[:99]
 
-# If a game was selected before it will prepopulate radio button based on session
-default_game = st.session_state.get("selected_game_name")
-if default_game in options:
-    default_index = list(options).index(default_game)
-else:
-    default_index = 0
+# Ensure session keys exist
+if "selected_appid" not in st.session_state:
+    st.session_state["selected_appid"] = None
 
-# Create radio button
-with st.container():
-    game_name = st.radio(
-        label="Select a game",
-        options=options,
-        key="selected_game_name",
-    )
+# Use session_state key to store radio value directly
+game_name = st.radio(
+    "Select a game",
+    options=options,
+    key="selected_game_name"
+)
 
-# Use session_state to store selection
+# Update AppID based on current selection
 if game_name:
-    row = df.loc[df["Name"] == game_name].iloc[0]
-    #st.session_state["selected_game_name"] = row["Name"]
-    st.session_state["selected_appid"] = int(row["AppID"])
+    match = df.loc[df["Name"] == game_name]
+    if not match.empty:
+        st.session_state["selected_appid"] = int(match.iloc[0]["AppID"])
+
+
+
 
 appid = st.session_state.get("selected_appid")
 if not appid:
@@ -59,13 +58,19 @@ tab_overview, tab_pricing, tab_reviews = st.tabs(["Overview", "Pricing", "Review
 with tab_overview:
     st.subheader("Description")
     st.write(data.get("short_description", "—"))
+
     st.subheader("Developers")
     st.write(", ".join(data.get("developers", [])) or "—")
 
-    notes = row["Notes"] if "Notes" in row and pd.notna(row["Notes"]) else ""
-    if str(notes).strip():
-        st.subheader("Sensitive Content")
-        st.write(notes)
+    # look up the row only if a game is selected
+    selected = st.session_state.get("selected_game_name")
+    if selected:
+        match = df.loc[df["Name"] == selected]
+        if not match.empty:
+            notes = match.iloc[0]["Notes"]
+            if pd.notna(notes) and str(notes).strip():
+                st.subheader("Sensitive Content")
+                st.write(notes)
 
 with tab_pricing:
     is_free = data.get("is_free") or {}
