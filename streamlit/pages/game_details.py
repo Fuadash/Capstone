@@ -57,7 +57,7 @@ with tab_pricing:
     else:
         price = data.get("price_overview") or {}
         if price:
-            st.metric("Current Price", f"${price['final']/100:.2f}")
+            st.metric("Current Price", f"£{price['final']/100:.2f}")
             st.metric("Discount", f"{price.get('discount_percent', 0)}%")
         else:
             st.info("No live pricing available.")
