@@ -51,12 +51,16 @@ with tab_overview:
     st.write(", ".join(data.get("developers", [])) or "—")
 
 with tab_pricing:
-    price = data.get("price_overview") or {}
-    if price:
-        st.metric("Current Price", f"${price['final']/100:.2f}")
-        st.metric("Discount", f"{price.get('discount_percent', 0)}%")
+    is_free = data.get("is_free") or {}
+    if is_free:
+        st.info("This game is Free-to-Play!")
     else:
-        st.info("No live pricing available.")
+        price = data.get("price_overview") or {}
+        if price:
+            st.metric("Current Price", f"${price['final']/100:.2f}")
+            st.metric("Discount", f"{price.get('discount_percent', 0)}%")
+        else:
+            st.info("No live pricing available.")
 
 with tab_reviews:
     rec = data.get("recommendations", {})
