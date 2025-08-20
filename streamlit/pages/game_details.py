@@ -6,18 +6,34 @@ from src.ui.layout import load_css
 st.title("Game Details")
 
 df = load_data("../etl/data/processed/processed_data.csv")
+filtered = df["Name"]
 load_css()
 
-search = st.text_input("Search for a game")
-filtered = df["Name"]
+# Text input with session logic
+search = st.text_input(
+    label="Search for a game", value=st.session_state.get("search_text", "")
+)
 if search:
+    st.session_state["search_text"] = search
     filtered = filtered[filtered.str.contains(search, case=False)]
 
 options = filtered.unique()[:99]
 
-# Create container
+# If a game was selected before it will prepopulate radio button based on session
+default_game = st.session_state.get("selected_game_name")
+if default_game in options:
+    default_index = list(options).index(default_game)
+else:
+    default_index = 0
+
+# Create radio button
 with st.container():
-    game_name = st.radio("Select a game", options, key="details_selected_game")
+    game_name = st.radio(
+        label="Select a game",
+        options=options,
+        key="details_selected_game",
+        index=default_index
+    )
 
 # Use session_state to store selection
 if game_name:
@@ -33,14 +49,10 @@ if not appid:
 
 data = get_live_game_info(appid, cc="gb", lang="en") or {}
 if data:
-    st.write(
-        f"Live data for **{st.session_state['selected_game_name']}**"
-    )
+    st.write(f"Live data for **{st.session_state['selected_game_name']}**")
     st.image(data.get("header_image"))
 else:
-    st.write(
-        f"Fetching live data for **{st.session_state['selected_game_name']}**..."
-    )
+    st.write(f"Fetching live data for **{st.session_state['selected_game_name']}**...")
 
 tab_overview, tab_pricing, tab_reviews = st.tabs(["Overview", "Pricing", "Reviews"])
 
@@ -49,6 +61,8 @@ with tab_overview:
     st.write(data.get("short_description", "—"))
     st.subheader("Developers")
     st.write(", ".join(data.get("developers", [])) or "—")
+
+    st.subheader("Sensitive Content")
 
 with tab_pricing:
     is_free = data.get("is_free") or {}
