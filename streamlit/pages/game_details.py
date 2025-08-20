@@ -7,40 +7,38 @@ import pandas as pd
 st.title("Game Details")
 
 df = load_data("../etl/data/processed/processed_data.csv")
-filtered = df["Name"]
 load_css()
+filtered = df["Name"]
 
-def checkVal(options):
-    ans = 0
-    val = st.session_state.get("selected_game_name", None)
-    if(val is None):
-        print("HDUAGHUJDYSEGDFYUJWEFGYHJWEFJH")
-    if val is not None:
-        ans = options.index(val) if val in options else 0
-    return ans
-
+# Load session
+for key, val in st.session_state.items():
+    st.session_state[key] = val
 
 # Text input with session logic
 search = st.text_input(
-    label="Search for a game", value=st.session_state.get("search_text", "")
+    label="Search for a game",
+    # value=st.session_state.get("search_text", ""),
+    key="search_text",
 )
 if search:
-    st.session_state["search_text"] = search
+    # st.session_state["search_text"] = search
     filtered = filtered[filtered.str.contains(search, case=False)]
+    # st.session_state.pop("selected_game_name", None)
 
 options = filtered.unique()[:99]
 
-game_name = st.radio(
-    "Select a game",
-    options=options,
-    index=checkVal(options.tolist()),
-    key="selected_game_name"
-)
+if st.session_state.get("selected_game_name") not in options:
+    st.session_state["selected_game_name"] = options[0] if len(options) > 0 else None
 
-if (game_name):
-    st.write("HIIIIIIIIIII")
-    st.write(st.session_state["selected_game_name"])
-    st.write("HIIIIIIIIIII")
+if len(options) > 0:
+    game_name = st.radio(
+        "Select a game",
+        options=options,
+        key="selected_game_name"
+    )
+else:
+    st.write("No games found.")
+    game_name = None
 
 # Update AppID based on current selection
 if game_name:

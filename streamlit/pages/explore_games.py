@@ -10,6 +10,9 @@ df = load_data("../etl/data/processed/processed_data.csv")
 filters = render_sidebar_filters(df)
 filtered = apply_filters(df, filters)
 
+for key, val in st.session_state.items():
+    st.session_state[key] = val
+
 # Game table
 games_table(filtered)
 
