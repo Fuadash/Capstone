@@ -6,7 +6,7 @@ from typing import Tuple, List
 class Filters:
     year_range: Tuple[int, int]
     price_range: Tuple[float, float]
-    max_positive: int
+    sentiment: str
     tags: List[str]
     platform: str  # "All" | "Windows" | "Mac" | "Linux"
     nsfw: str  # "Yes" | "No"

@@ -17,10 +17,9 @@ def apply_filters(df: pd.DataFrame, f: Filters) -> pd.DataFrame:
         & (output["Price"] <= f.price_range[1])
     ]
 
-    # Positive % filter
-    output = output[
-        (output["Positive %"] >= f.max_positive)
-    ]
+    # Sentiment filter
+    if f.sentiment:
+        output = output[output["Sentiment"].isin(f.sentiment)]
 
     # Tag filter
     if f.tags:

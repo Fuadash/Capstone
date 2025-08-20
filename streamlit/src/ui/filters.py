@@ -6,7 +6,9 @@ from ..utils.types import Filters
 def render_sidebar_filters(df: pd.DataFrame) -> Filters:
     st.sidebar.header("Steam Games (April 2025)")
 
-    min_year, max_year, min_price, max_price, max_positive, tag_options = get_filter_bounds(df)
+    min_year, max_year, min_price, max_price, sentiment_options, tag_options = (
+        get_filter_bounds(df)
+    )
 
     year_range = st.sidebar.slider(
         "Release Year", min_value=min_year, max_value=max_year, value=()
@@ -18,15 +20,11 @@ def render_sidebar_filters(df: pd.DataFrame) -> Filters:
         max_price,
         value=(min_price, max_price),
         step=1.0,
-        format="$%.2f"
+        format="$%.2f",
     )
 
-    positive = st.sidebar.number_input(
-        "Target Positive Review %",
-        max_value=max_positive,
-        step=1,
-        format="%d",
-        key="render_positive"
+    sentiment = st.sidebar.multiselect(
+        "Review Sentiment", sentiment_options, key="render_sentiment"
     )
 
     tags = st.sidebar.multiselect("Tags", tag_options, key="render_tags")
@@ -39,8 +37,7 @@ def render_sidebar_filters(df: pd.DataFrame) -> Filters:
         "Display Age Restricted Content?", ["Yes", "No"], key="render_nsfw"
     )
 
-
-    return Filters(year_range, price_range, positive, tags, platform, nsfw)
+    return Filters(year_range, price_range, sentiment, tags, platform, nsfw)
 
 
 @st.cache_data
@@ -49,5 +46,27 @@ def get_filter_bounds(df: pd.DataFrame):
     min_year, max_year = int(df["Release Year"].min()), int(df["Release Year"].max())
     min_price, max_price = float(df["Price"].min()), float(df["Price"].max())
     tag_options = df["Tags"].dropna().str.split(",").explode().str.strip().unique()
-    max_positive = int(df["Positive %"].max())
-    return min_year, max_year, min_price, max_price, max_positive, sorted(tag_options)
+    sentiment_options = df["Sentiment"].unique()
+    order = [
+        "Overwhelmingly Positive",
+        "Very Positive",
+        "Mostly Positive",
+        "Positive",
+        "Mixed",
+        "Negative",
+        "Mostly Negative",
+        "Very Negative",
+        "Overwhelmingly Negative",
+        "No Reviews"
+    ]
+    return (
+        min_year,
+        max_year,
+        min_price,
+        max_price,
+        sorted(
+            sentiment_options,
+            key=lambda x: order.index(x) if x in order else len(order),
+        ),
+        sorted(tag_options),
+    )

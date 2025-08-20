@@ -25,6 +25,25 @@ def avg_price_per_year(df: pd.DataFrame):
 
 
 def price_distribution(df: pd.DataFrame):
-    return px.histogram(df, x="Price",
-                        nbins=10,
-                        title="Distribution of Game Prices")
+    return px.histogram(df, x="Price", nbins=10, title="Distribution of Game Prices")
+
+
+def rating_distribution(df: pd.DataFrame):
+    order = [
+        "No Reviews",
+        "Overwhelmingly Negative",
+        "Very Negative",
+        "Mostly Negative",
+        "Negative",
+        "Mixed",
+        "Positive",
+        "Mostly Positive",
+        "Very Positive",
+        "Overwhelmingly Positive",
+    ]
+    return px.bar(
+        df,
+        x="Sentiment",
+        title="Distribution of Game Sentiment",
+        category_orders={"Sentiment": order},
+    )
