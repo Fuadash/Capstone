@@ -16,4 +16,4 @@ def load_data(path: str) -> pd.DataFrame:
 
     df["TagList"] = df["Tags"].apply(safe_split)
 
-    return df
+    return df.sort_values(by="Positive", ascending=False)
