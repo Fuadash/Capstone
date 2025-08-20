@@ -10,6 +10,16 @@ df = load_data("../etl/data/processed/processed_data.csv")
 filtered = df["Name"]
 load_css()
 
+def checkVal(options):
+    ans = 0
+    val = st.session_state.get("selected_game_name", None)
+    if(val is None):
+        print("HDUAGHUJDYSEGDFYUJWEFGYHJWEFJH")
+    if val is not None:
+        ans = options.index(val) if val in options else 0
+    return ans
+
+
 # Text input with session logic
 search = st.text_input(
     label="Search for a game", value=st.session_state.get("search_text", "")
@@ -20,16 +30,17 @@ if search:
 
 options = filtered.unique()[:99]
 
-# Ensure session keys exist
-if "selected_appid" not in st.session_state:
-    st.session_state["selected_appid"] = None
-
-# Use session_state key to store radio value directly
 game_name = st.radio(
     "Select a game",
     options=options,
+    index=checkVal(options.tolist()),
     key="selected_game_name"
 )
+
+if (game_name):
+    st.write("HIIIIIIIIIII")
+    st.write(st.session_state["selected_game_name"])
+    st.write("HIIIIIIIIIII")
 
 # Update AppID based on current selection
 if game_name:
@@ -93,3 +104,5 @@ with tab_reviews:
         st.write(f"Metacritic: {meta.get('score')} / 100")
     if not (rec or meta):
         st.info("No review data available.")
+
+
