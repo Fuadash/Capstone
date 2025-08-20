@@ -56,8 +56,8 @@ def transform(
     # 2 Drop Duplicates
 
     df_no_dupes = cleaned_df.drop_duplicates()
-    # 3. Standardize dates/currencies/etc.
 
+    # 3. Standardize dates/currencies/etc.
     df_no_dupes["Release date"] = pd.to_datetime(
         df_no_dupes["Release date"], errors="coerce"
     )
@@ -71,18 +71,99 @@ def transform(
     # 5. Remove outlier game prices
     df_no_dupes = df_no_dupes.loc[df['Price'] <= 100]
 
+    # 6. Enrichment
+    enriched_df = enrich_reviews(df_no_dupes)
+
+    enriched_df = enrich_platforms(enriched_df)
+
     # Write data
 
     # Make sure directory exists
     os.makedirs(os.path.dirname(output_csv), exist_ok=True)
 
     # Save to CSV
-    df_no_dupes.to_csv(output_csv, index=False)
+    enriched_df.to_csv(output_csv, index=False)
 
     # 5.return data
-    return df_no_dupes
+    return enriched_df
 
 
 def clean_nulls(df: pd.DataFrame, columns: [str]) -> pd.DataFrame:
     cleaned_df = df.dropna(subset=columns).copy()
     return cleaned_df
+
+
+def enrich_reviews(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Takes the "Positive" and "Negative" fields of a dataframe,
+    referring to the reviews of a game.
+    Adds:
+    - A "Positive %" column
+    - "Sentiment" column with categories:
+        Overwhelmingly Positive, Very Positive, Positive,
+        Mixed, Negative, Mostly Negative, Very Negative,
+        Overwhelmingly Negative
+    """
+
+    # Calculate Positive %
+    df["Total"] = df["Positive"] + df["Negative"]
+    df["Positive %"] = ((df["Positive"] / df["Total"]) * 100).round()
+    df["Positive %"] = df["Positive %"].astype("Int64")
+    df.loc[df["Total"] == 0, "Positive %"] = pd.NA
+
+    # axis=1 applies function to each row
+    df["Sentiment"] = df.apply(get_sentiment, axis=1)
+
+    return df.drop(columns=["Total"])
+
+
+def get_sentiment(row):
+    pos_pct = row["Positive %"]
+    total = row["Total"]
+
+    # Handle no reviews
+    if pd.isna(pos_pct):
+        return "No Reviews"
+
+    pos_pct = int(pos_pct)
+
+    if 40 <= pos_pct <= 69:
+        return "Mixed"
+    if 70 <= pos_pct <= 79:
+        return "Mostly Positive"
+    if 20 <= pos_pct <= 39:
+        return "Mostly Negative"
+
+    if pos_pct >= 80:
+        if total >= 500 and pos_pct >= 95:
+            return "Overwhelmingly Positive"
+        elif total >= 50:
+            return "Very Positive"
+        else:
+            return "Positive"
+
+    if pos_pct <= 19:
+        if total >= 500:
+            return "Overwhelmingly Negative"
+        elif total >= 50:
+            return "Very Negative"
+        else:
+            return "Negative"
+
+    return "Mixed"
+
+
+def enrich_platforms(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Combines Windows, Mac, Linux into "Available platforms"
+    Example: "Windows, Mac, Linux" or "Mac, Linux".
+    """
+
+    platforms = ["Windows", "Mac", "Linux"]
+
+    df["Available platforms"] = df.apply(
+        lambda row: ", ".join([p for p in platforms if row[p]]),
+        axis=1
+    )
+
+    return df
