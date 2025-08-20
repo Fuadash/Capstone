@@ -6,6 +6,7 @@ import pandas as pd
 
 st.title("Game Details")
 
+# Load data and css
 df = load_data("../etl/data/processed/processed_data.csv")
 load_css()
 filtered = df["Name"]
@@ -17,19 +18,20 @@ for key, val in st.session_state.items():
 # Text input with session logic
 search = st.text_input(
     label="Search for a game",
-    # value=st.session_state.get("search_text", ""),
     key="search_text",
 )
+
+# Filter down names based on text input
 if search:
-    # st.session_state["search_text"] = search
     filtered = filtered[filtered.str.contains(search, case=False)]
-    # st.session_state.pop("selected_game_name", None)
 
 options = filtered.unique()[:99]
 
+# Protects against filters which exclude a currently selected game
 if st.session_state.get("selected_game_name") not in options:
     st.session_state["selected_game_name"] = options[0] if len(options) > 0 else None
 
+# Display radio options based on options
 if len(options) > 0:
     game_name = st.radio(
         "Select a game",
@@ -38,29 +40,31 @@ if len(options) > 0:
     )
 else:
     st.write("No games found.")
-    game_name = None
+    st.stop()
 
-# Update AppID based on current selection
+# Get AppID based on current selection, put it in session
+# TODO: Maybe redunant? Using sessions here may be overengineered
 if game_name:
     match = df.loc[df["Name"] == game_name]
     if not match.empty:
         st.session_state["selected_appid"] = int(match.iloc[0]["AppID"])
 
-
-
-
+# Pull the AppID from the session
+# TODO: Maybe redundant? See above
 appid = st.session_state.get("selected_appid")
 if not appid:
     st.warning("Pick a game to view live data.")
     st.stop()
 
-
+# Make API request and write it to data
 data = get_live_game_info(appid, cc="gb", lang="en") or {}
 if data:
     st.write(f"Live data for **{st.session_state['selected_game_name']}**")
     st.image(data.get("header_image"))
 else:
     st.write(f"Fetching live data for **{st.session_state['selected_game_name']}**...")
+
+# Render the pages
 
 tab_overview, tab_pricing, tab_reviews = st.tabs(["Overview", "Pricing", "Reviews"])
 
@@ -102,5 +106,3 @@ with tab_reviews:
         st.write(f"Metacritic: {meta.get('score')} / 100")
     if not (rec or meta):
         st.info("No review data available.")
-
-
