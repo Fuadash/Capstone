@@ -1,21 +1,25 @@
 import streamlit as st
 from src.services.data_loader import load_data
 from src.services.steam_client import get_live_game_info
+from src.ui.layout import load_css
 
 st.title("Game Details")
 
 df = load_data("../etl/data/processed/processed_data.csv")
+load_css()
+
+search = st.text_input("Search for a game")
+filtered = df["Name"]
+if search:
+    filtered = filtered[filtered.str.contains(search, case=False)]
+
+options = filtered.unique()[:99]
+
+# Create container
+with st.container():
+    game_name = st.radio("Select a game", options, key="details_selected_game")
 
 # Use session_state to store selection
-game_name = st.selectbox(
-    "Select a game",
-    df["Name"].unique(),
-    key="details_selected_game",
-    index=df["Name"].unique().tolist().index(
-        st.session_state.get("selected_game_name", df["Name"].iloc[0])
-    )
-)
-
 if game_name:
     row = df.loc[df["Name"] == game_name].iloc[0]
     st.session_state["selected_game_name"] = row["Name"]
@@ -26,10 +30,16 @@ if not appid:
     st.warning("Pick a game to view live data.")
     st.stop()
 
-st.write(
-    f"Fetching live data for **{st.session_state['selected_game_name']}** …"
-)
+
 data = get_live_game_info(appid, cc="gb", lang="en") or {}
+if data:
+    st.write(
+        f"Live data for **{st.session_state['selected_game_name']}**"
+    )
+else:
+    st.write(
+        f"Fetching live data for **{st.session_state['selected_game_name']}**..."
+    )
 
 tab_overview, tab_pricing, tab_reviews = st.tabs(["Overview", "Pricing", "Reviews"])
 

@@ -20,6 +20,14 @@ def transform(
             "Movies",
             "Score rank",
             "User score",
+            "Estimated owners",
+            "About the game",
+            "Reviews",
+            "Website",
+            "Support url",
+            "Support email",
+            "Metacritic url",
+            "Publishers"
         ],
         inplace=True,
     )
@@ -31,7 +39,6 @@ def transform(
             "AppID",
             "Name",
             "Release date",
-            "Estimated owners",
             "Peak CCU",
             "Required age",
             "Price",

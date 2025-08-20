@@ -13,17 +13,4 @@ filtered = apply_filters(df, filters)
 # Game table
 games_table(filtered)
 
-# Selection widget ( sessionstores selection for other pages)
-game_name = st.selectbox(
-    "Select a game",
-    filtered["Name"].unique(),
-    key="explore_selected_game",
-    index=filtered["Name"].unique().tolist().index(
-        st.session_state.get("selected_game_name", filtered["Name"].iloc[0])
-    )
-)
-if game_name:
-    row = filtered.loc[filtered["Name"] == game_name].iloc[0]
-    st.session_state["selected_appid"] = int(row["AppID"])
-    st.session_state["selected_game_name"] = row["Name"]
-    st.info("Go to **Game Details** page for live info.")
+st.info("Go to the **Game Details** page for live info.")

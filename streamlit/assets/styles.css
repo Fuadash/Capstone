@@ -3,3 +3,9 @@
 
 /* Make tables fill page */
 .stDataFrame, .stTable { width: 100% !important; }
+
+/* Make radio groups size correctly */
+div[data-testid="stVerticalBlock"] div[role="radiogroup"] {
+    max-height: 300px;
+    overflow-y: auto;
+}
