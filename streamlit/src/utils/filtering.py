@@ -17,6 +17,11 @@ def apply_filters(df: pd.DataFrame, f: Filters) -> pd.DataFrame:
         & (output["Price"] <= f.price_range[1])
     ]
 
+    # Positive % filter
+    output = output[
+        (output["Positive %"] >= f.max_positive)
+    ]
+
     # Tag filter
     if f.tags:
         tag_set = set(f.tags)
