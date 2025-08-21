@@ -7,4 +7,5 @@ def games_table(df: pd.DataFrame):
     st.dataframe(
         df[["Name", "Price", "Tags", "Sentiment", "Release Year", "Developers", "Available platforms"]].head(500),
         use_container_width=True,
+        hide_index=True,
     )
