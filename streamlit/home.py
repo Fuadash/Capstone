@@ -17,3 +17,6 @@ st.write(
 
 # Loads and caches immediately
 _ = load_data("../etl/data/processed/processed_data.csv")
+
+for k, v in st.session_state.items():
+    st.session_state[k] = v

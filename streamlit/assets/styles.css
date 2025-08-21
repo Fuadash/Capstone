@@ -6,6 +6,7 @@
 
 /* Make radio groups size correctly */
 div[data-testid="stVerticalBlock"] div[role="radiogroup"] {
-    max-height: 300px;
-    overflow-y: auto;
+    max-height: 305px;
+    overflow-y: hidden;
+    overflow-x: auto;
 }

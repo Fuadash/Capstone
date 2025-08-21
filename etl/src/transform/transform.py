@@ -85,6 +85,8 @@ def transform(
 
     enriched_df = enrich_platforms(enriched_df)
 
+    enriched_df = enrich_tags(enriched_df)
+
     # Write data
 
     # Make sure directory exists
@@ -113,6 +115,7 @@ def enrich_reviews(df: pd.DataFrame) -> pd.DataFrame:
         Mixed, Negative, Mostly Negative, Very Negative,
         Overwhelmingly Negative
     """
+    #df = df.copy()
 
     # Calculate Positive %
     df["Total"] = df["Positive"] + df["Negative"]
@@ -167,12 +170,20 @@ def enrich_platforms(df: pd.DataFrame) -> pd.DataFrame:
     Combines Windows, Mac, Linux into "Available platforms"
     Example: "Windows, Mac, Linux" or "Mac, Linux".
     """
+    #df = df.copy()
 
     platforms = ["Windows", "Mac", "Linux"]
-
     df["Available platforms"] = df.apply(
         lambda row: ", ".join([p for p in platforms if row[p]]),
         axis=1
     )
 
+    return df
+
+def enrich_tags(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Adds a placeholder tag to the DataFrame when the "Tags" column is null.
+    """
+    df = df.copy()
+    df["Tags"] = df["Tags"].fillna("No user-submitted tags available")
     return df
