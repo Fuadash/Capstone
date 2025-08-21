@@ -22,8 +22,6 @@ if search:
     filtered = filtered[filtered.str.contains(search, case=False)]
 
 options = filtered.unique()[:55]
-for r in options:
-    print(repr(r))
 
 # Protects against filters which exclude a currently selected game
 if st.session_state.get("selected_game_name") not in options:
@@ -70,18 +68,20 @@ with tab_overview:
     st.subheader("Description")
     st.write(data.get("short_description", "—"))
 
-    st.subheader("Developers")
-    st.write(", ".join(data.get("developers", [])) or "—")
-
     # look up the row only if a game is selected
     selected = st.session_state.get("selected_game_name")
     if selected:
         match = df.loc[df["Name"] == selected]
         if not match.empty:
+            st.subheader("Popular User-Defined Tags:")
+            st.write(", ".join(match.iloc[0]["Tags"].split(",")[:5]))
             notes = match.iloc[0]["Notes"]
             if pd.notna(notes) and str(notes).strip():
                 st.subheader("Sensitive Content")
                 st.write(notes)
+
+    st.subheader("Developers")
+    st.write(", ".join(data.get("developers", [])) or "—")
 
 with tab_pricing:
     is_free = data.get("is_free") or {}
