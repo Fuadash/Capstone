@@ -6,20 +6,24 @@ from src.ui.charts import releases_per_year, avg_price_per_year, price_distribut
 
 st.title("Trends")
 
-# for key, val in st.session_state.items():
-#     st.session_state[key] = val
-
 df = load_data("../etl/data/processed/processed_data.csv")
 filters = render_sidebar_filters(df)
 filtered = apply_filters(df, filters)
 
 
+def render_chart(chart, data):
+    if not data.empty:
+        return st.plotly_chart(chart(data), use_container_width=True)
+    else:
+        return st.warning("No Games to Display")
+
+
 tab1, tab2, tab3, tab4 = st.tabs(["Releases", "Avg Price", "Price Dist.", "Rating Dist."])
 with tab1:
-    st.plotly_chart(releases_per_year(filtered), use_container_width=True)
+    render_chart(releases_per_year, filtered)
 with tab2:
-    st.plotly_chart(avg_price_per_year(filtered), use_container_width=True)
+    render_chart(avg_price_per_year, filtered)
 with tab3:
-    st.plotly_chart(price_distribution(filtered), use_container_width=True)
+    render_chart(price_distribution, filtered)
 with tab4:
-    st.plotly_chart(rating_distribution(filtered), use_container_width=True)
+    render_chart(rating_distribution, filtered)

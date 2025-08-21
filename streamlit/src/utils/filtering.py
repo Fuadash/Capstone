@@ -31,7 +31,7 @@ def apply_filters(df: pd.DataFrame, f: Filters) -> pd.DataFrame:
         output = output[output[f.platform] == True]
 
     # NSFW content filter
-    if f.nsfw == "No":
+    if f.nsfw == "No" and "Age restricted" in output.columns:
         output = output[output["Age restricted"] != True]
 
     return output

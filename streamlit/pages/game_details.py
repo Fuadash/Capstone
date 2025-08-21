@@ -11,10 +11,6 @@ df = load_data("../etl/data/processed/processed_data.csv")
 load_css()
 filtered = df["Name"]
 
-# Load session
-# for key, val in st.session_state.items():
-#     st.session_state[key] = val
-
 # Text input with session logic
 search = st.text_input(
     label="Search for a game",
@@ -98,7 +94,6 @@ with tab_pricing:
             st.info("No live pricing available.")
 
 with tab_reviews:
-    # TODO: Displayed stats: total recs, worded reviews
     # get data from API req
     reviews = data.get("reviews", {})
     meta = data.get("metacritic", {})
