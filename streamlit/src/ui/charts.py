@@ -29,6 +29,7 @@ def price_distribution(df: pd.DataFrame):
 
 
 def rating_distribution(df: pd.DataFrame):
+    counts = df.groupby("Sentiment").size().reset_index(name="count")
     order = [
         "No Reviews",
         "Overwhelmingly Negative",
@@ -42,8 +43,9 @@ def rating_distribution(df: pd.DataFrame):
         "Overwhelmingly Positive",
     ]
     return px.bar(
-        df,
+        counts,
         x="Sentiment",
+        y="count",
         title="Distribution of Game Sentiment",
         category_orders={"Sentiment": order},
     )
