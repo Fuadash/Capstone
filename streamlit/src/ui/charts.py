@@ -15,17 +15,28 @@ def releases_per_year(df: pd.DataFrame):
 
 def avg_price_per_year(df: pd.DataFrame):
     avg = df.groupby("Release Year")["Price"].mean().reset_index()
-    return px.line(
+    fig = px.line(
         avg,
         x="Release Year",
         y="Price",
         markers=True,
         title="Average Game Price per Year",
     )
+    return fig
 
 
 def price_distribution(df: pd.DataFrame):
-    return px.histogram(df, x="Price", nbins=10, title="Distribution of Game Prices")
+    fig = px.histogram(
+        df,
+        x="Price",
+        nbins=20,
+        title="Distribution of Game Prices",
+        labels={
+            "Price": "Price ($)",
+        },
+    )
+    fig.update_traces(xbins=dict(start=0, end=max(df["Price"]), size=2.5))
+    return fig
 
 
 def rating_distribution(df: pd.DataFrame):
@@ -42,10 +53,15 @@ def rating_distribution(df: pd.DataFrame):
         "Very Positive",
         "Overwhelmingly Positive",
     ]
-    return px.bar(
+
+    fig = px.bar(
         counts,
         x="Sentiment",
         y="count",
         title="Distribution of Game Sentiment",
         category_orders={"Sentiment": order},
+        labels={
+            "Sentiment": "Review Sentiment",
+        },
     )
+    return fig
