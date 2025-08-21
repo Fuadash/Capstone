@@ -34,7 +34,7 @@ So that it can be accessed by the visualization application and shared with stak
 
 # Epic 4: Visualization
 ```
-As a Data Analyst/Scientist,
+As a dashboard user,
 I want to view and interact with dashboards in Streamlit displaying Steam game performance metrics,
 So that I can quickly explore trends and insights from the transformed data.
 ```
@@ -156,7 +156,7 @@ So that I can visually compare game performance across time, price points, and g
 ## USER STORY 4.2
 
 ```
-As a customer,
+As a dashboard user,
 I want filtering capabilities in the Streamlit dashboard,
 So that I can explore data subsets without the technical knowledge needed to run queries.
 ```
