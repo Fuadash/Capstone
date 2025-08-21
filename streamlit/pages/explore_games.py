@@ -6,8 +6,8 @@ from src.ui.tables import games_table
 
 st.title("Explore Games")
 
-for key, val in st.session_state.items():
-    st.session_state[key] = val
+# for key, val in st.session_state.items():
+#     st.session_state[key] = val
 
 df = load_data("../etl/data/processed/processed_data.csv")
 filters = render_sidebar_filters(df)

@@ -12,8 +12,8 @@ load_css()
 filtered = df["Name"]
 
 # Load session
-for key, val in st.session_state.items():
-    st.session_state[key] = val
+# for key, val in st.session_state.items():
+#     st.session_state[key] = val
 
 # Text input with session logic
 search = st.text_input(
