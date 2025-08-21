@@ -42,6 +42,10 @@ def test_create_handlers_returns_both_handlers():
         assert file_handler.level == logging.INFO
         assert console_handler.level == logging.INFO
 
+        # Close the file so Windows can delete it
+        file_handler.close()
+        logging.getLogger().removeHandler(file_handler)
+
 
 @patch("src.utils.logging_utils.logging.getLogger")
 def test_setup_logger_creates_logger_with_handlers(mock_get_logger):
