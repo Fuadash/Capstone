@@ -162,7 +162,8 @@ def get_sentiment(row):
         else:
             return "Negative"
 
-    return "Mixed"
+    # should never reach this
+    return "No Reviews"
 
 
 def enrich_platforms(df: pd.DataFrame) -> pd.DataFrame:
