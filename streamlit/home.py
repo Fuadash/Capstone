@@ -14,6 +14,7 @@ st.write(
     "Use the pages on the left: **Explore Games**, "
     "**Trends**, and **Game Details**."
 )
+st.image("assets/store_home_share.jpg", width=1300)
 
 # Loads and caches immediately
 _ = load_data("../etl/data/processed/processed_data.csv")
