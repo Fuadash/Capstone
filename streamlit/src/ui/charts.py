@@ -35,7 +35,14 @@ def price_distribution(df: pd.DataFrame):
             "Price": "Price ($)",
         },
     )
-    fig.update_traces(xbins=dict(start=0, end=max(df["Price"]), size=5))
+    if not df.empty and not df["Price"].empty:
+        fig.update_traces(
+            xbins=dict(start=0, end=df["Price"].max(), size=5)
+        )
+    else:
+        fig.update_traces(
+            xbins=dict(start=0, end=0, size=1)
+        )
     return fig
 
 
