@@ -42,7 +42,7 @@ def render_sidebar_filters(df: pd.DataFrame) -> Filters:
 
 @st.cache_data
 def get_filter_bounds(df: pd.DataFrame):
-    """Cache min/max values."""
+    """Cache values."""
     min_year, max_year = int(df["Release Year"].min()), int(df["Release Year"].max())
     min_price, max_price = float(df["Price"].min()), float(df["Price"].max())
     tag_options = df["Tags"].dropna().str.split(",").explode().str.strip().unique()
