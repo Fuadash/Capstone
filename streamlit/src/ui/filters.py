@@ -2,6 +2,17 @@ import streamlit as st
 import pandas as pd
 from ..utils.types import Filters
 
+# Credit to stackoverflow https://stackoverflow.com/questions/74968179/session-state-is-reset-in-streamlit-multipage-app
+
+def keep(key: str):
+    """Commit widget value (_key) to permanent app state (key)."""
+    st.session_state[key] = st.session_state["_" + key]
+
+
+def unkeep(key: str):
+    """Initialize widget value (_key) from permanent app state (key)."""
+    st.session_state["_" + key] = st.session_state[key]
+
 
 def render_sidebar_filters(df: pd.DataFrame) -> Filters:
     st.sidebar.header("Steam Games (April 2025)")
@@ -10,34 +21,81 @@ def render_sidebar_filters(df: pd.DataFrame) -> Filters:
         get_filter_bounds(df)
     )
 
-    year_range = st.sidebar.slider(
-        "Release Year", min_value=min_year, max_value=max_year, value=()
+    defaults = {
+        "year_range": (min_year, max_year),
+        "price_range": (min_price, max_price),
+        "sentiment": [],
+        "tags": [],
+        "platform": "All",
+        "nsfw": "No"
+    }
+    for key, val in defaults.items():
+        if key not in st.session_state:
+            st.session_state[key] = val
+        unkeep(key)  # copy permanent -> temporary
+
+    # Widgets bind to temporary (_key)
+    st.sidebar.slider(
+        "Release Year",
+        min_value=min_year,
+        max_value=max_year,
+        key="_year_range",
+        on_change=keep,
+        args=["year_range"]
     )
 
-    price_range = st.sidebar.slider(
+    st.sidebar.slider(
         "Price Range",
         min_price,
         max_price,
-        value=(min_price, max_price),
         step=1.0,
         format="$%.2f",
+        key="_price_range",
+        on_change=keep,
+        args=["price_range"]
     )
 
-    sentiment = st.sidebar.multiselect(
-        "Review Sentiment", sentiment_options, key="render_sentiment"
+    st.sidebar.multiselect(
+        "Review Sentiment",
+        sentiment_options,
+        key="_sentiment",
+        on_change=keep,
+        args=["sentiment"]
     )
 
-    tags = st.sidebar.multiselect("Tags", tag_options, key="render_tags")
-
-    platform = st.sidebar.radio(
-        "Platform", ["All", "Windows", "Mac", "Linux"], key="render_platform"
+    st.sidebar.multiselect(
+        "Tags",
+        tag_options,
+        key="_tags",
+        on_change=keep,
+        args=["tags"]
     )
 
-    nsfw = st.sidebar.radio(
-        "Display Age Restricted Content?", ["Yes", "No"], key="render_nsfw"
+    st.sidebar.radio(
+        "Platform",
+        ["All", "Windows", "Mac", "Linux"],
+        key="_platform",
+        on_change=keep,
+        args=["platform"]
     )
 
-    return Filters(year_range, price_range, sentiment, tags, platform, nsfw)
+    st.sidebar.radio(
+        "Display Age Restricted Content?",
+        ["Yes", "No"],
+        key="_nsfw",
+        on_change=keep,
+        args=["nsfw"]
+    )
+
+    # Return state
+    return Filters(
+        st.session_state["year_range"],
+        st.session_state["price_range"],
+        st.session_state["sentiment"],
+        st.session_state["tags"],
+        st.session_state["platform"],
+        st.session_state["nsfw"]
+    )
 
 
 @st.cache_data

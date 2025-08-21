@@ -6,15 +6,15 @@ from src.ui.tables import games_table
 
 st.title("Explore Games")
 
-for key, val in st.session_state.items():
-    st.session_state[key] = val
-
 df = load_data("../etl/data/processed/processed_data.csv")
 filters = render_sidebar_filters(df)
 filtered = apply_filters(df, filters)
 
+# Render table if rows exist
+if not filtered.empty:
+    games_table(filtered)
+else:
+    st.warning("No Games to Display")
 
-# Game table
-games_table(filtered)
 
 st.info("Go to the **Game Details** page for live info.")
