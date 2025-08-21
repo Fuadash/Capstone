@@ -22,6 +22,8 @@ if search:
     filtered = filtered[filtered.str.contains(search, case=False)]
 
 options = filtered.unique()[:55]
+for r in options:
+    print(repr(r))
 
 # Protects against filters which exclude a currently selected game
 if st.session_state.get("selected_game_name") not in options:
@@ -55,7 +57,7 @@ if not appid:
 # Make API request and write it to data
 data = get_live_game_info(appid, cc="gb", lang="en") or {}
 if data:
-    st.write(f"Live data for **{st.session_state['selected_game_name']}**")
+    st.write(f"Live data for **{data.get("name", {})}**")
     st.image(data.get("header_image"))
 else:
     st.write(f"Fetching live data for **{st.session_state['selected_game_name']}**...")

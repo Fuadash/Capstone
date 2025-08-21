@@ -43,6 +43,9 @@ def price_distribution(df: pd.DataFrame):
         fig.update_traces(
             xbins=dict(start=0, end=0, size=1)
         )
+    num_bins = len(fig.data[0].x)  # number of bins
+    colors = [px.colors.qualitative.Plotly[i % len(px.colors.qualitative.Plotly)] for i in range(num_bins)]
+    fig.data[0].marker.color = colors
     return fig
 
 
@@ -67,6 +70,8 @@ def rating_distribution(df: pd.DataFrame):
         y="count",
         title="Distribution of Game Sentiment",
         category_orders={"Sentiment": order},
+        color='Sentiment',
+        color_continuous_scale='Plotly',
         labels={
             "Sentiment": "Review Sentiment",
         },
