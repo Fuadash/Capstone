@@ -25,7 +25,7 @@ search = st.text_input(
 if search:
     filtered = filtered[filtered.str.contains(search, case=False)]
 
-options = filtered.unique()[:99]
+options = filtered.unique()[:55]
 
 # Protects against filters which exclude a currently selected game
 if st.session_state.get("selected_game_name") not in options:
@@ -98,11 +98,31 @@ with tab_pricing:
             st.info("No live pricing available.")
 
 with tab_reviews:
-    rec = data.get("recommendations", {})
+    # TODO: Displayed stats: total recs, worded reviews
+    # get data from API req
+    reviews = data.get("reviews", {})
     meta = data.get("metacritic", {})
-    if rec:
-        st.write(f"Total Steam reviews: {rec.get('total', 0):,}")
+    # Show values from API
+    if reviews or meta:
+        st.subheader("Critic Reviews")
+    if reviews:
+        st.write(reviews.replace("<br>", "\n"))
     if meta:
         st.write(f"Metacritic: {meta.get('score')} / 100")
-    if not (rec or meta):
+    # Show values from dataframe if exists
+    selected = st.session_state.get("selected_game_name")
+    if selected:
+        match = df.loc[df["Name"] == selected]
+        if not match.empty:
+            st.subheader("User Reviews")
+            positive = match.iloc[0]["Positive"]
+            positive_percent = match.iloc[0]["Positive %"]
+            sentiment = match.iloc[0]["Sentiment"]
+            if pd.notna(positive) and positive > 0:
+                st.write(f"No. of recommendations from users: {int(positive)}")
+            if pd.notna(positive_percent):
+                st.write(f"Percentage positive reviews: {int(positive_percent)}%")
+            if pd.notna(sentiment):
+                st.write(f"Overall sentiment from users: {sentiment}")
+    if not (meta or reviews or selected):
         st.info("No review data available.")
