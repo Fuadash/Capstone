@@ -3,6 +3,7 @@ import pandas as pd
 
 
 def releases_per_year(df: pd.DataFrame):
+    # Count number of games released by year
     counts = df.groupby("Release Year").size().reset_index(name="count")
     return px.line(
         counts,
@@ -35,6 +36,8 @@ def price_distribution(df: pd.DataFrame):
             "Price": "Price ($)",
         },
     )
+    # Stops fig from exploding if it has no values
+    # Might be redundant
     if not df.empty and not df["Price"].empty:
         fig.update_traces(
             xbins=dict(start=0, end=df["Price"].max(), size=5)
@@ -43,6 +46,8 @@ def price_distribution(df: pd.DataFrame):
         fig.update_traces(
             xbins=dict(start=0, end=0, size=1)
         )
+    
+    # Colours
     num_bins = len(fig.data[0].x)  # number of bins
     colors = [px.colors.qualitative.Plotly[i % len(px.colors.qualitative.Plotly)] for i in range(num_bins)]
     fig.data[0].marker.color = colors
@@ -51,6 +56,7 @@ def price_distribution(df: pd.DataFrame):
 
 def rating_distribution(df: pd.DataFrame):
     counts = df.groupby("Sentiment").size().reset_index(name="count")
+    # Sets the order for the figure
     order = [
         "No Reviews",
         "Overwhelmingly Negative",
@@ -75,5 +81,43 @@ def rating_distribution(df: pd.DataFrame):
         labels={
             "Sentiment": "Review Sentiment",
         },
+    )
+    return fig
+
+def score_by_genre(df: pd.DataFrame):
+    # Drop rows without tags or score
+    df = df.dropna(subset=["Tags", "Positive %"])
+
+    # Split tags into lists then explodes them into separate rows
+    df["Tags"] = df["Tags"].str.split(",")
+    exploded = df.explode("Tags")
+    exploded["Tags"] = exploded["Tags"].str.strip()  # remove extra spaces
+
+    # Find top 10 most common tags
+    top_tags = exploded["Tags"].value_counts().nlargest(10).index
+
+    # Filter to top tags only
+    filtered = exploded[exploded["Tags"].isin(top_tags)]
+
+    # Compute average Positive % for each tag
+    avg_scores = (
+        filtered.groupby("Tags")["Positive %"]
+        .mean()
+        .reset_index()
+        .sort_values("Positive %", ascending=False)
+    )
+
+    # Plot bar chart
+    fig = px.bar(
+        avg_scores,
+        x="Tags",
+        y="Positive %",
+        title="Average Positive % of Most Common Genres",
+        labels={
+            "Tags": "Genre",
+            "Positive %": "Average Positive %",
+        },
+        color="Positive %",
+        color_continuous_scale="Blues",
     )
     return fig

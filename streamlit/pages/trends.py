@@ -2,7 +2,7 @@ import streamlit as st
 from src.services.data_loader import load_data
 from src.ui.filters import render_sidebar_filters
 from src.utils.filtering import apply_filters
-from src.ui.charts import releases_per_year, avg_price_per_year, price_distribution, rating_distribution
+from src.ui.charts import releases_per_year, avg_price_per_year, price_distribution, rating_distribution, score_by_genre
 
 st.title("Trends")
 
@@ -18,7 +18,7 @@ def render_chart(chart, data):
         return st.warning("No Games to Display")
 
 
-tab1, tab2, tab3, tab4 = st.tabs(["Releases", "Avg Price", "Price Dist.", "Rating Dist."])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["Releases", "Avg Price", "Price Dist.", "Rating Dist.", "Score by Genre"])
 with tab1:
     render_chart(releases_per_year, filtered)
 with tab2:
@@ -27,3 +27,5 @@ with tab3:
     render_chart(price_distribution, filtered)
 with tab4:
     render_chart(rating_distribution, filtered)
+with tab5:
+    render_chart(score_by_genre, filtered)
