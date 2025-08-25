@@ -1,6 +1,6 @@
 import streamlit as st
 from src.services.data_loader import load_data
-from src.ui.layout import load_css
+from src.ui.layout import load_css, get_home_image_path
 from src.services.load_env import load_env
 
 config = load_env()
@@ -10,8 +10,8 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-STYLE_PATH = config["STYLE_PATH"]
-load_css(STYLE_PATH)
+
+load_css()
 
 # hacky solution
 for key, val in st.session_state.items():
@@ -23,7 +23,8 @@ st.write(
     "Use the pages on the left: **Explore Games**, "
     "**Trends**, and **Game Details**."
 )
-st.image("assets/store_home_share.jpg", width=1300)
+# Display home page image
+st.image(get_home_image_path(), width=1300)
 
 # Loads and caches immediately
 DATA_PATH = config["DATA_PATH"]
