@@ -9,6 +9,11 @@ st.set_page_config(
 )
 load_css()
 
+# hacky solution
+for key, val in st.session_state.items():
+    if (key == "selected_game_name" or key == "selected_appid" or key=="search_text"):
+        st.session_state[key] = val
+
 st.title("Steam Explorer")
 st.write(
     "Use the pages on the left: **Explore Games**, "
