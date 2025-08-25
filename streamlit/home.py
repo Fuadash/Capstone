@@ -10,7 +10,8 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-load_css()
+STYLE_PATH = config["STYLE_PATH"]
+load_css(STYLE_PATH)
 
 # hacky solution
 for key, val in st.session_state.items():
