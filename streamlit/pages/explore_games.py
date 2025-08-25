@@ -3,6 +3,9 @@ from src.services.data_loader import load_data
 from src.ui.filters import render_sidebar_filters
 from src.utils.filtering import apply_filters
 from src.ui.tables import games_table
+from src.services.load_env import load_env
+
+config = load_env()
 
 st.title("Explore Games")
 
@@ -11,7 +14,9 @@ for key, val in st.session_state.items():
     if (key == "selected_game_name" or key == "selected_appid" or key=="search_text"):
         st.session_state[key] = val
 
-df = load_data("../etl/data/processed/processed_data.csv")
+
+DATA_PATH = config["DATA_PATH"]
+df = load_data(DATA_PATH)
 filters = render_sidebar_filters(df)
 filtered = apply_filters(df, filters)
 

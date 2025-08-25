@@ -3,6 +3,7 @@ from src.services.data_loader import load_data
 from src.services.steam_client import get_live_game_info
 from src.ui.layout import load_css
 import pandas as pd
+from src.services.load_env import load_env
 
 st.title("Game Details")
 
@@ -12,7 +13,11 @@ for key, val in st.session_state.items():
         st.session_state[key] = val
 
 # Load data and css
-df = load_data("../etl/data/processed/processed_data.csv")
+
+config = load_env()
+DATA_PATH = config["DATA_PATH"]
+df = load_data(DATA_PATH)
+
 load_css()
 filtered = df["Name"]
 
