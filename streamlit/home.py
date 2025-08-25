@@ -1,6 +1,9 @@
 import streamlit as st
 from src.services.data_loader import load_data
 from src.ui.layout import load_css
+from src.services.load_env import load_env
+
+config = load_env()
 
 st.set_page_config(
     page_title="Steam Explorer",
@@ -22,7 +25,8 @@ st.write(
 st.image("assets/store_home_share.jpg", width=1300)
 
 # Loads and caches immediately
-_ = load_data("../etl/data/processed/processed_data.csv")
+DATA_PATH = config["DATA_PATH"]
+_ = load_data(DATA_PATH)
 
 for k, v in st.session_state.items():
     st.session_state[k] = v
