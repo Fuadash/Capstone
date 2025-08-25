@@ -6,6 +6,11 @@ from src.ui.tables import games_table
 
 st.title("Explore Games")
 
+# hacky solution
+for key, val in st.session_state.items():
+    if (key == "selected_game_name" or key == "selected_appid" or key=="search_text"):
+        st.session_state[key] = val
+
 df = load_data("../etl/data/processed/processed_data.csv")
 filters = render_sidebar_filters(df)
 filtered = apply_filters(df, filters)

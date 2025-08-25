@@ -6,6 +6,11 @@ import pandas as pd
 
 st.title("Game Details")
 
+# hacky solution
+for key, val in st.session_state.items():
+    if (key == "selected_game_name" or key == "selected_appid" or key=="search_text"):
+        st.session_state[key] = val
+
 # Load data and css
 df = load_data("../etl/data/processed/processed_data.csv")
 load_css()
