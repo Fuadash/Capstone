@@ -2,6 +2,7 @@ import streamlit as st
 from src.services.data_loader import load_data
 from src.ui.filters import render_sidebar_filters
 from src.utils.filtering import apply_filters
+from src.ui.layout import load_css
 from src.ui.tables import games_table
 from src.services.load_env import load_env
 
@@ -19,6 +20,7 @@ DATA_PATH = config["DATA_PATH"]
 df = load_data(DATA_PATH)
 filters = render_sidebar_filters(df)
 filtered = apply_filters(df, filters)
+load_css()
 
 # Render table if rows exist
 if not filtered.empty:
