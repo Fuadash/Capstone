@@ -1,16 +1,13 @@
 import streamlit as st
 from pathlib import Path
 from src.services.load_env import load_env
-import streamlit.components.v1 as components
 
 
 def load_css():
-    if "css_loaded" not in st.session_state:
-        config = load_env()
-        STYLE_PATH = config["STYLE_PATH"]
-        css = Path(STYLE_PATH).read_text()
-        components.html(f"<style>{css}</style>", height=0)
-        st.session_state.css_loaded = True
+    config = load_env()
+    STYLE_PATH = config["STYLE_PATH"]
+    css = Path(STYLE_PATH).read_text()
+    st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
 
 
 def get_home_image_path():

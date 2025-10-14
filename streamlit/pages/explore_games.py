@@ -20,7 +20,6 @@ DATA_PATH = config["DATA_PATH"]
 df = load_data(DATA_PATH)
 filters = render_sidebar_filters(df)
 filtered = apply_filters(df, filters)
-load_css()
 
 # Render table if rows exist
 if not filtered.empty:
