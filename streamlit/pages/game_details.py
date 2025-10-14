@@ -18,7 +18,6 @@ config = load_env()
 DATA_PATH = config["DATA_PATH"]
 df = load_data(DATA_PATH)
 
-load_css()
 filtered = df["Name"]
 
 # Text input with session logic
