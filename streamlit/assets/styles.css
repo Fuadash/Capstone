@@ -10,3 +10,7 @@ div[data-testid="stVerticalBlock"] div[role="radiogroup"] {
     overflow-y: hidden;
     overflow-x: auto;
 }
+
+[data-testid="stVerticalBlock"] > div {
+  width: 100% !important;
+}
